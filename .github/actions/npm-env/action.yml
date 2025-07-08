@@ -1,7 +1,5 @@
 name: "Install npm dependencies"
 inputs:
-  pj_dir_name:
-    required: true
   npm_dir_name:
     required: true
   test_cmd:
@@ -19,18 +17,26 @@ runs:
     - name: vars
       shell: bash
       run: |
-        echo "PJ_DIR=$GITHUB_WORKSPACE/${{ inputs.pj_dir_name }}" >> $GITHUB_ENV
-        echo "NPM_DIR=$GITHUB_WORKSPACE/${{ inputs.pj_dir_name }}/${{ inputs.npm_dir_name }}" >> $GITHUB_ENV
+        echo "NPM_DIR=$GITHUB_WORKSPACE/${{ inputs.npm_dir_name }}" >> $GITHUB_ENV
     - name: Install uv
       if : ${{ inputs.use_python == 1 }}
       uses: astral-sh/setup-uv@v5
-    - name: set up Node.js
-      uses: actions/setup-node@v3
       with:
-        node-version: '20'
-    - name: Install pnpm
-      run: npm install -g pnpm
-      shell: bash
+        enable-cache: true
+
+    - uses: pnpm/action-setup@v4
+      name: Install pnpm
+      with:
+        version: 10
+        run_install: false
+
+    - name: Install Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'pnpm'
+        cache-dependency-path: '${{ env.NPM_DIR }}/pnpm-lock.yaml'
+
     - name: install dependencies
       run: pnpm install
       shell: bash
