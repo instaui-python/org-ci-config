@@ -1,12 +1,16 @@
 name: Ruff Code Check
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+  workflow_call:
+    inputs:
+      path:
+        type: string
+        description: "The directory or file to apply ruff formatting to"
+        default: "."
+      config_file:
+        type: string
+        description: "Optional path to a custom ruff configuration file"
+        default: ""
 
 jobs:
   ruff-check:
@@ -18,9 +22,9 @@ jobs:
       - name: Run Ruff Linting (Check Code Quality)
         uses: chartboost/ruff-action@v1
         with:
-          args: 'check .'
+          args: 'check ${{ inputs.path }}'
 
       - name: Run Ruff Formatting Check
         uses: chartboost/ruff-action@v1
         with:
-          args: 'format --check'
+          args: 'format ${{ inputs.path }} --check'
