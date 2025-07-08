@@ -1,0 +1,48 @@
+name: "Install npm dependencies"
+inputs:
+  pj_dir_name:
+    required: true
+  npm_dir_name:
+    required: true
+  test_cmd:
+    required: false
+    default: "pnpm vitest"
+  use_python:
+    description: "Whether to use python or not (1 or 0)"
+    required: false
+    type: number
+    default: 0
+
+runs:
+  using: "composite"
+  steps:
+    - name: vars
+      shell: bash
+      run: |
+        echo "PJ_DIR=$GITHUB_WORKSPACE/${{ inputs.pj_dir_name }}" >> $GITHUB_ENV
+        echo "NPM_DIR=$GITHUB_WORKSPACE/${{ inputs.pj_dir_name }}/${{ inputs.npm_dir_name }}" >> $GITHUB_ENV
+    - name: Install uv
+      if : ${{ inputs.use_python == 1 }}
+      uses: astral-sh/setup-uv@v5
+    - name: set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+    - name: Install pnpm
+      run: npm install -g pnpm
+      shell: bash
+    - name: install dependencies
+      run: pnpm install
+      shell: bash
+      working-directory: ${{ env.NPM_DIR }}
+    - name: test
+      if: ${{ inputs.test_cmd != '' }}
+      run: |
+        echo "Running test command: ${{ inputs.test_cmd }}"
+        ${{ inputs.test_cmd }}
+      shell: bash
+      working-directory: ${{ env.NPM_DIR }}
+    - name: build
+      shell: bash
+      run: pnpm run build
+      working-directory: ${{ env.NPM_DIR }}

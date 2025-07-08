@@ -1,0 +1,53 @@
+name: Reusable Playwright Configuration
+on:
+  workflow_call:
+    inputs:
+      playwright_version:
+        type: string
+        default: "1.47.0"  # Must match the version in pyproject.toml
+      job_name:
+        type: string
+        default: "Web Test"
+      python-versions:
+        type: string
+        default: '["3.12"]'
+      dir-name:
+        type: string
+        required: true
+      steps:
+        type: string
+        required: true
+      run-test-timeout-minutes:
+        type: number
+        default: 3
+
+env:
+  WORK_DIR: ${{ github.workspace }}/${{ inputs.dir-name }}
+
+jobs:
+  run-all-test:
+    name: ${{ inputs.job_name }} in Playwright
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v${{ inputs.playwright_version }}-focal
+    strategy:
+      matrix:
+        python-version: ${{ fromJson(inputs.python-versions) }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install the project
+        run: uv sync --locked --all-extras --dev
+      - name: Run steps
+        timeout-minutes: ${{ inputs.run-test-timeout-minutes }}
+        run: |
+          echo "Running steps in container..."
+          ${{ inputs.steps }}
+        working-directory: ${{ env.WORK_DIR }}
