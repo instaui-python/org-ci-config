@@ -5,11 +5,6 @@ inputs:
   test_cmd:
     required: false
     default: "pnpm vitest"
-  use_python:
-    description: "Whether to use python or not (1 or 0)"
-    required: false
-    type: number
-    default: 0
 
 runs:
   using: "composite"
@@ -18,11 +13,6 @@ runs:
       shell: bash
       run: |
         echo "NPM_DIR=$GITHUB_WORKSPACE/${{ inputs.npm_dir_name }}" >> $GITHUB_ENV
-    - name: Install uv
-      if : ${{ inputs.use_python == 1 }}
-      uses: astral-sh/setup-uv@v5
-      with:
-        enable-cache: true
 
     - uses: pnpm/action-setup@v4
       name: Install pnpm
