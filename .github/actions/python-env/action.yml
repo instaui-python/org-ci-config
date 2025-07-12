@@ -2,7 +2,7 @@ name: "Install python dependencies"
 inputs:
   uv-sync-args:
     required: false
-    default: ""
+    default: "--dev --no-sources"
 
 runs:
   using: "composite"
