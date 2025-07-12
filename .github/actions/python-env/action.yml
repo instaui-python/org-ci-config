@@ -1,9 +1,8 @@
-name: "Install python dependencies and test"
+name: "Install python dependencies"
 inputs:
-  test_cmd:
+  uv-sync-args:
     required: false
-    default: "uv run pytest __tests"
-
+    default: "--dev"
 
 runs:
   using: "composite"
@@ -17,10 +16,5 @@ runs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install the project
-      run: uv sync --locked --all-extras --dev
-      shell: bash
-    - name: Run steps
-      run: |
-        echo "Running steps in container..."
-        ${{ inputs.test_cmd }}
+      run: uv sync --locked ${{ inputs.uv-sync-args }}
       shell: bash
