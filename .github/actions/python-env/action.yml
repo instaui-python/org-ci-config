@@ -2,7 +2,7 @@ name: "Install python dependencies"
 inputs:
   uv-sync-args:
     required: false
-    default: "--dev --no-sources"
+    default: ""
 
 runs:
   using: "composite"
@@ -16,5 +16,5 @@ runs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install the project
-      run: uv sync --locked ${{ inputs.uv-sync-args }}
+      run: uv sync ${{ inputs.uv-sync-args }}
       shell: bash
