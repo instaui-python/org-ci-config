@@ -1,0 +1,31 @@
+name: "Install python dependencies for playwright"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
+      with:
+        enable-cache: true
+
+    - name: Cache Playwright browsers
+      id: playwright-cache
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/ms-playwright
+        key: ${{ runner.os }}-playwright-${{ matrix.python-version }}-${{ hashFiles('**/pyproject.toml') }}
+        restore-keys: |
+          ${{ runner.os }}-playwright-${{ matrix.python-version }}-
+
+    - name: Create uv virtual environment
+      run: uv python pin ${{ matrix.python-version }}
+
+    - name: Install Playwright & project deps
+      run: |
+        uv sync --dev --no-sources
+
+        # Install playwright dependencies if not cached
+        if [ "${{ steps.playwright-cache.outputs.cache-hit }}" != "true" ]; then
+          uv run playwright install chromium --with-deps
+        fi
+      shell: bash
