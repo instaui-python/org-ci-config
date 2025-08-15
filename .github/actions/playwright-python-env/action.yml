@@ -19,6 +19,7 @@ runs:
 
     - name: Create uv virtual environment
       run: uv python pin ${{ matrix.python-version }}
+      shell: bash
 
     - name: Install Playwright & project deps
       run: |
