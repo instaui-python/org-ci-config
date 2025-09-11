@@ -19,12 +19,26 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Run Ruff Linting (Check Code Quality)
-        uses: chartboost/ruff-action@v1
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
         with:
-          args: 'check ${{ inputs.path }}'
+          enable-cache: true
+
+      - name: Install dependencies (with lint group)
+        run: uv sync --group lint
+
+      - name: Run Ruff Linting (Check Code Quality)
+        run: |
+          if [ -n "${{ inputs.config_file }}" ]; then
+            uv run ruff check ${{ inputs.path }} --config ${{ inputs.config_file }}
+          else
+            uv run ruff check ${{ inputs.path }}
+          fi
 
       - name: Run Ruff Formatting Check
-        uses: chartboost/ruff-action@v1
-        with:
-          args: 'format ${{ inputs.path }} --check'
+        run: |
+          if [ -n "${{ inputs.config_file }}" ]; then
+            uv run ruff format ${{ inputs.path }} --check --config ${{ inputs.config_file }}
+          else
+            uv run ruff format ${{ inputs.path }} --check
+          fi
