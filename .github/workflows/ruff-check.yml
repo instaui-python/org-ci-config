@@ -30,15 +30,15 @@ jobs:
       - name: Run Ruff Linting (Check Code Quality)
         run: |
           if [ -n "${{ inputs.config_file }}" ]; then
-            uv run ruff check . --config ${{ inputs.config_file }}
+            uvx ruff check . --config ${{ inputs.config_file }}
           else
-            uv run ruff check .
+            uvx ruff check .
           fi
 
       - name: Run Ruff Formatting Check
         run: |
           if [ -n "${{ inputs.config_file }}" ]; then
-            uv run ruff format . --check --config ${{ inputs.config_file }}
+            uvx ruff format . --check --config ${{ inputs.config_file }}
           else
-            uv run ruff format . --check
+            uvx ruff format . --check
           fi
