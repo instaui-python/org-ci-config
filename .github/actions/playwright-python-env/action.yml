@@ -11,8 +11,6 @@ runs:
         key: playwright-${{ runner.os }}-${{ matrix.python-version }}-1.48.0
         restore-keys: |
           playwright-${{ runner.os }}-${{ matrix.python-version }}-
-          playwright-${{ runner.os }}-
-          playwright-
 
     - name: Create uv virtual environment
       run: uv python pin ${{ matrix.python-version }}
