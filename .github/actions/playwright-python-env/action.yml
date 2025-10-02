@@ -12,6 +12,11 @@ runs:
         restore-keys: |
           playwright-${{ runner.os }}-${{ matrix.python-version }}-1.48.0-
 
+    # Prevent "man-db" trigger updates during apt installs, which can take a long time
+    - name: Disable man-db triggers
+      run: sudo rm -f /var/lib/dpkg/triggers/man-db
+      shell: bash
+
     - name: Create uv virtual environment
       run: uv python pin ${{ matrix.python-version }}
       shell: bash
