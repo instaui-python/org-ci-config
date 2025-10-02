@@ -18,6 +18,11 @@ jobs:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ inputs.python-version }}-1.48.0-${{ github.run_id }}
 
+      # Prevent "man-db" trigger updates during apt installs, which can take a long time
+      - name: Disable man-db triggers
+        run: sudo rm -f /var/lib/dpkg/triggers/man-db
+        shell: bash
+
       - name: Install uv
         uses: astral-sh/setup-uv@v5
         with:
