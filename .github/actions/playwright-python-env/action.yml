@@ -16,10 +16,12 @@ runs:
       run: uv python pin ${{ matrix.python-version }}
       shell: bash
 
-    - name: Install Playwright & project deps
-      run: |
-        uv sync --dev --no-sources
+    - name: Project deps
+      run: uv sync --dev --no-sources
+      shell: bash
 
+    - name: Install Playwright
+      run: |
         # Install playwright dependencies if not cached
         if [ "${{ steps.playwright-cache.outputs.cache-hit }}" != "true" ]; then
           uv run playwright install chromium --with-deps
