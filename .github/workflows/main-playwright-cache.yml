@@ -1,5 +1,8 @@
 name: "Main Branch Playwright Cache"
 
+on:
+  workflow_call: {}
+
 jobs:
   main-playwright-cache:
     runs-on: ubuntu-latest
