@@ -12,15 +12,22 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ matrix.python-version }}-1.48.0
+          key: playwright-${{ runner.os }}-${{ matrix.python-version }}-1.48.0-${{ github.run_id }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
 
       - name: Create uv virtual environment
-        run: uv python pin ${{ matrix.python-version }}
+        run: |
+          uv init
+          uv python pin ${{ matrix.python-version }}
         shell: bash
 
       - name: Install Playwright & project deps
         run: |
-          uv sync --dev --no-sources
+          uv add playwright==1.48.0
 
           # Install playwright dependencies if not cached
           if [ "${{ steps.playwright-cache.outputs.cache-hit }}" != "true" ]; then
