@@ -1,33 +1,34 @@
 name: "Main Branch Playwright Cache"
 
-runs:
-  using: "composite"
-  steps:
-    - name: Cache Playwright browsers
-      id: playwright-cache
-      uses: actions/cache@v4
-      with:
-        path: ~/.cache/ms-playwright
-        key: playwright-${{ runner.os }}-${{ matrix.python-version }}-1.48.0
+jobs:
+  main-playwright-cache:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ matrix.python-version }}-1.48.0
 
-    - name: Create uv virtual environment
-      run: uv python pin ${{ matrix.python-version }}
-      shell: bash
+      - name: Create uv virtual environment
+        run: uv python pin ${{ matrix.python-version }}
+        shell: bash
 
-    - name: Install Playwright & project deps
-      run: |
-        uv sync --dev --no-sources
+      - name: Install Playwright & project deps
+        run: |
+          uv sync --dev --no-sources
 
-        # Install playwright dependencies if not cached
-        if [ "${{ steps.playwright-cache.outputs.cache-hit }}" != "true" ]; then
-          uv run playwright install chromium --with-deps
-        fi
-      shell: bash
+          # Install playwright dependencies if not cached
+          if [ "${{ steps.playwright-cache.outputs.cache-hit }}" != "true" ]; then
+            uv run playwright install chromium --with-deps
+          fi
+        shell: bash
 
-    - name: Log cache status
-      run: |
-        if [ "${{ steps.playwright-cache.outputs.cache-hit }}" == "true" ]; then
-          echo "✅ Cache HIT"
-        else
-          echo "❌ Cache MISS"
-        fi
+      - name: Log cache status
+        run: |
+          if [ "${{ steps.playwright-cache.outputs.cache-hit }}" == "true" ]; then
+            echo "✅ Cache HIT"
+          else
+            echo "❌ Cache MISS"
+          fi
