@@ -4,7 +4,7 @@ on:
     inputs:
       playwright_version:
         type: string
-        default: "1.47.0"  # Must match the version in pyproject.toml
+        default: "1.57.0"  # Must match the version in pyproject.toml
       job_name:
         type: string
         default: "Web Test"

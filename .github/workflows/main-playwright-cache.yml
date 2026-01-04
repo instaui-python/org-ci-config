@@ -16,7 +16,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ inputs.python-version }}-1.48.0-${{ github.run_id }}
+          key: playwright-${{ runner.os }}-${{ inputs.python-version }}-1.57.0-${{ github.run_id }}
 
       # Prevent "man-db" trigger updates during apt installs, which can take a long time
       - name: Remove man-db
@@ -35,7 +35,7 @@ jobs:
 
       - name: Install Playwright & project deps
         run: |
-          uv add playwright==1.48.0
+          uv add playwright==1.57.0
 
           # Install playwright dependencies if not cached
           if [ "${{ steps.playwright-cache.outputs.cache-hit }}" != "true" ]; then
