@@ -8,9 +8,9 @@ runs:
       uses: actions/cache@v4
       with:
         path: ~/.cache/ms-playwright
-        key: playwright-${{ runner.os }}-${{ matrix.python-version }}-1.48.0
+        key: playwright-${{ runner.os }}-${{ matrix.python-version }}-1.57.0
         restore-keys: |
-          playwright-${{ runner.os }}-${{ matrix.python-version }}-1.48.0-
+          playwright-${{ runner.os }}-${{ matrix.python-version }}-1.57.0-
 
     # Prevent "man-db" trigger updates during apt installs, which can take a long time
     - name: Remove man-db
@@ -22,7 +22,7 @@ runs:
       shell: bash
 
     - name: Project deps
-      run: uv sync --dev --no-sources
+      run: uv sync --group web --group playwright --group test --no-sources
       shell: bash
 
     - name: Install Playwright
