@@ -22,7 +22,7 @@ runs:
       shell: bash
 
     - name: Project deps
-      run: uv sync --group web --group playwright --group test --no-sources
+      run: uv sync --only-group web --only-group playwright --only-group test --no-sources
       shell: bash
 
     - name: Install Playwright
